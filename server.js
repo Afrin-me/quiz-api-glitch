@@ -1,119 +1,179 @@
-/**
- * This is the main Node.js server script for your project
- * Check out the two endpoints this back-end API provides in fastify.get and fastify.post below
- */
+const express = require("express");
+const crypto = require("crypto");
 
-const path = require("path");
+const cors = require("cors");
+const app = express();
 
-// Require the fastify framework and instantiate it
-const fastify = require("fastify")({
-  // Set this to true for detailed logging:
-  logger: false,
-});
+app.use(express.json());
+app.use(cors());
 
-// ADD FAVORITES ARRAY VARIABLE FROM TODO HERE
-
-// Setup our static files
-fastify.register(require("@fastify/static"), {
-  root: path.join(__dirname, "public"),
-  prefix: "/", // optional: default '/'
-});
-
-// Formbody lets us parse incoming forms
-fastify.register(require("@fastify/formbody"));
-
-// View is a templating manager for fastify
-fastify.register(require("@fastify/view"), {
-  engine: {
-    handlebars: require("handlebars"),
+const users = [
+  { id: 1, username: "admin", password: "password123" },
+  { id: 2, username: "user", password: "user123" },
+]
+const questions = [
+  {
+    id: 1,
+    question: "What is React?",
+    options: ["Library", "Framework", "Language", "Tool"],
+    answer: "Library",
   },
-});
-
-// Load and parse SEO data
-const seo = require("./src/seo.json");
-if (seo.url === "glitch-default") {
-  seo.url = `https://${process.env.PROJECT_DOMAIN}.glitch.me`;
-}
-
-/**
- * Our home page route
- *
- * Returns src/pages/index.hbs with data built into it
- */
-fastify.get("/", function (request, reply) {
-  // params is an object we'll pass to our handlebars template
-  let params = { seo: seo };
-
-  // If someone clicked the option for a random color it'll be passed in the querystring
-  if (request.query.randomize) {
-    // We need to load our color data file, pick one at random, and add it to the params
-    const colors = require("./src/colors.json");
-    const allColors = Object.keys(colors);
-    let currentColor = allColors[(allColors.length * Math.random()) << 0];
-
-    // Add the color properties to the params object
-    params = {
-      color: colors[currentColor],
-      colorError: null,
-      seo: seo,
-    };
+  {
+    id: 2,
+    question: "Which hook is used for state management in functional components?",
+    options: ["useEffect", "useState", "useReducer", "useMemo"],
+    answer: "useState",
+  },
+  {
+    id: 3,
+    question: "Which React Router version introduced useRoutes hook?",
+    options: ["v4", "v5", "v6", "v7"],
+    answer: "v6",
+  },
+  {
+    id: 4,
+    question: "What is JSX?",
+    options: [
+      "A JavaScript syntax extension",
+      "A templating engine",
+      "A new programming language",
+      "A CSS preprocessor",
+    ],
+    answer: "A JavaScript syntax extension",
+  },
+  {
+    id: 5,
+    question: "Which method is used to update the state in a class component?",
+    options: ["setState", "updateState", "changeState", "modifyState"],
+    answer: "setState",
+  },
+  {
+    id: 6,
+    question: "What is the purpose of useEffect in React?",
+    options: [
+      "To manage state",
+      "To perform side effects in functional components",
+      "To create a new component",
+      "To handle user input",
+    ],
+    answer: "To perform side effects in functional components",
+  },
+  {
+    id: 7,
+    question: "Which of the following is NOT a built-in React hook?",
+    options: ["useRef", "useLayoutEffect", "useContext", "useFetch"],
+    answer: "useFetch",
+  },
+  {
+    id: 8,
+    question: "How do you pass data from a parent to a child component?",
+    options: ["Using state", "Using props", "Using Redux", "Using context"],
+    answer: "Using props",
+  },
+  {
+    id: 9,
+    question: "What is the default behavior of useEffect without a dependency array?",
+    options: [
+      "Runs only once after the component mounts",
+      "Runs on every render",
+      "Never runs",
+      "Runs only when the component unmounts",
+    ],
+    answer: "Runs on every render",
+  },
+  {
+    id: 10,
+    question: "Which of the following statements about React keys is true?",
+    options: [
+      "Keys help React identify which items have changed, are added, or removed",
+      "Keys are required for all React components",
+      "Keys must always be globally unique",
+      "Keys improve performance by caching components",
+    ],
+    answer: "Keys help React identify which items have changed, are added, or removed",
+  },
+  {
+    id: 11,
+    question: "What is the purpose of React.Fragment?",
+    options: [
+      "To wrap multiple elements without adding extra nodes to the DOM",
+      "To create reusable components",
+      "To manage global state",
+      "To optimize React performance",
+    ],
+    answer: "To wrap multiple elements without adding extra nodes to the DOM",
+  },
+  {
+    id: 12,
+    question: "What does useRef return?",
+    options: ["A function", "A mutable object", "A state variable", "A React component"],
+    answer: "A mutable object",
+  },
+  {
+    id: 13,
+    question: "What is React.memo used for?",
+    options: [
+      "To memoize expensive calculations",
+      "To prevent unnecessary re-renders of functional components",
+      "To create a Redux store",
+      "To manage API calls",
+    ],
+    answer: "To prevent unnecessary re-renders of functional components",
   }
+];
 
-  // The Handlebars code will be able to access the parameter values and build them into the page
-  return reply.view("/src/pages/index.hbs", params);
+
+;
+
+// Generate a random token
+const generateToken = () => crypto.randomBytes(16).toString("hex");
+
+// Login API
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+  const user = users.find((u) => u.username === username && u.password === password);
+
+  if (user) {
+    const token = generateToken();
+    res.json({ success: true, userId: user.id, username: user.username, token });
+  } else {
+    res.status(401).json({ success: false, message: "Invalid credentials" });
+  }
+});
+// Store user results
+let userResults = {};
+
+// **1. Fetch All Questions**
+app.get("/api/questions", (req, res) => {
+  const formattedQuestions = questions.map(({ answer, ...rest }) => rest); // Remove correct answers
+  res.json({ success: true, questions: formattedQuestions });
 });
 
-/**
- * Our POST route to handle and react to form submissions
- *
- * Accepts body data indicating the user choice
- */
-fastify.post("/", function (request, reply) {
-  // Build the params object to pass to the template
-  let params = { seo: seo };
+// **2. Submit Quiz & Get Score**
+app.post("/api/submit", (req, res) => {
+  const { userId, answers } = req.body;
+  let score = 0;
 
-  // If the user submitted a color through the form it'll be passed here in the request body
-  let color = request.body.color;
-
-  // If it's not empty, let's try to find the color
-  if (color) {
-    // ADD CODE FROM TODO HERE TO SAVE SUBMITTED FAVORITES
-
-    // Load our color data file
-    const colors = require("./src/colors.json");
-
-    // Take our form submission, remove whitespace, and convert to lowercase
-    color = color.toLowerCase().replace(/\s/g, "");
-
-    // Now we see if that color is a key in our colors object
-    if (colors[color]) {
-      // Found one!
-      params = {
-        color: colors[color],
-        colorError: null,
-        seo: seo,
-      };
-    } else {
-      // No luck! Return the user value as the error property
-      params = {
-        colorError: request.body.color,
-        seo: seo,
-      };
+  questions.forEach((q, index) => {
+    if (answers[q.id] === q.answer) {
+      score++;
     }
-  }
+  });
 
-  // The Handlebars template will use the parameter values to update the page with the chosen color
-  return reply.view("/src/pages/index.hbs", params);
+  userResults[userId] = score;
+  res.json({ success: true, score, message: "Quiz submitted successfully!" });
 });
 
-// Run the server and report out to the logs
-fastify.listen(
-  { port: process.env.PORT, host: "0.0.0.0" },
-  function (err, address) {
-    if (err) {
-      console.error(err);
-      process.exit(1);
-    }
-    console.log(`Your app is listening on ${address}`);
+// **3. Get User Result**
+app.get("/api/result/:userId", (req, res) => {
+  const { userId } = req.params;
+  const score = userResults[userId];
+
+  if (score !== undefined) {
+    res.json({ success: true, userId, score });
+  } else {
+    res.status(404).json({ success: false, message: "Result not found" });
   }
-);
+});
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
