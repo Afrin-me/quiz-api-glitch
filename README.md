@@ -14,7 +14,12 @@
 - **Description:** Authenticates a user and returns a token, user ID, and username.
 - **Request Body:**
 
-  `{ "username": "admin", "password": "password123" }`
+  ```
+
+
+  { "username": "admin", "password": "password123" }
+
+  ```
 
 - **Response (Success - 200):**
 
