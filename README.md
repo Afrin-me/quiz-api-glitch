@@ -1,44 +1,73 @@
-# Hello Node!
+# **Quiz API Documentation**
 
-This project includes a Node.js server script and a web page that connects to it. The front-end page presents a form the visitor can use to submit a color name, sending the submitted value to the back-end API running on the server. The server returns info to the page that allows it to update the display with the chosen color. 🎨
+## **Base URL**
 
-[Node.js](https://nodejs.org/en/about/) is a popular runtime that lets you run server-side JavaScript. This project uses the [Fastify](https://www.fastify.io/) framework and explores basic templating with [Handlebars](https://handlebarsjs.com/).
+`http://localhost:5000`
 
-_Last updated: 14 August 2023_
+## **Endpoints**
 
-## Prerequisites
+### **1\. User Authentication**
 
-You'll get best use out of this project if you're familiar with basic JavaScript. If you've written JavaScript for client-side web pages this is a little different because it uses server-side JS, but the syntax is the same!
+#### **Login**
 
-## What's in this project?
+- **Endpoint:** `POST /login`
+- **Description:** Authenticates a user and returns a token, user ID, and username.
+- **Request Body:**
 
-← `README.md`: That’s this file, where you can tell people what your cool website does and how you built it.
+  `{ "username": "admin", "password": "password123" }`
 
-← `public/style.css`: The styling rules for the pages in your site.
+- **Response (Success - 200):**
 
-← `server.js`: The **Node.js** server script for your new site. The JavaScript defines the endpoints in the site back-end, one to return the homepage and one to update with the submitted color. Each one sends data to a Handlebars template which builds these parameter values into the web page the visitor sees.
+  `{ "success": true, "userId": 1, "username": "admin", "token": "a1b2c3d4e5f6g7h8i9j0" }`
 
-← `package.json`: The NPM packages for your project's dependencies.
+- **Response (Unauthorized - 401):**
 
-← `src/`: This folder holds the site template along with some basic data files.
+  `{ "success": false, "message": "Invalid credentials" }`
 
-← `src/pages/index.hbs`: This is the main page template for your site. The template receives parameters from the server script, which it includes in the page HTML. The page sends the user submitted color value in the body of a request, or as a query parameter to choose a random color.
+---
 
-← `src/colors.json`: A collection of CSS color names. We use this in the server script to pick a random color, and to match searches against color names.
+### **2\. Fetch All Quiz Questions**
 
-← `src/seo.json`: When you're ready to share your new site or add a custom domain, change SEO/meta settings in here.
+#### **Get Questions**
 
-## Try this next 🏗️
+- **Endpoint:** `GET /api/questions`
+- **Description:** Returns a list of all quiz questions (without correct answers).
+- **Response (Success - 200):**
 
-Take a look in `TODO.md` for next steps you can try out in your new site!
+  `{ "success": true, "questions": [ { "id": 1, "question": "What is React?", "options": ["Library", "Framework", "Language", "Tool"] }, { "id": 2, "question": "Which hook is used for state management in functional components?", "options": ["useEffect", "useState", "useReducer", "useMemo"] } ] }`
 
-___Want a minimal version of this project to build your own Node.js app? Check out [Blank Node](https://glitch.com/edit/#!/remix/glitch-blank-node)!___
+---
 
-![Glitch](https://cdn.glitch.com/a9975ea6-8949-4bab-addb-8a95021dc2da%2FLogo_Color.svg?v=1602781328576)
+### **3\. Submit Quiz & Get Score**
 
-## You built this with Glitch!
+#### **Submit Answers**
 
-[Glitch](https://glitch.com) is a friendly community where millions of people come together to build web apps and websites.
+- **Endpoint:** `POST /api/submit`
+- **Description:** Submits quiz answers and calculates the score.
+- **Request Body:**
 
-- Need more help? [Check out our Help Center](https://help.glitch.com/) for answers to any common questions.
-- Ready to make it official? [Become a paid Glitch member](https://glitch.com/pricing) to boost your app with private sharing, more storage and memory, domains and more.
+  `{ "userId": 1, "answers": { "1": "Library", "2": "useState", "3": "v6" } }`
+
+- **Response (Success - 200):**
+
+  `{ "success": true, "score": 3, "message": "Quiz submitted successfully!" }`
+
+---
+
+### **4\. Fetch User Quiz Result**
+
+#### **Get User Result**
+
+- **Endpoint:** `GET /api/result/:userId`
+- **Description:** Retrieves the quiz score of a specific user.
+- **Request Example:**
+
+  `GET /api/result/1`
+
+- **Response (Success - 200):**
+
+  `{ "success": true, "userId": 1, "score": 3 }`
+
+- **Response (Not Found - 404):**
+
+  `{ "success": false, "message": "Result not found" }`

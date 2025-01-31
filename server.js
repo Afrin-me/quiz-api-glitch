@@ -140,6 +140,18 @@ app.post("/login", (req, res) => {
     res.status(401).json({ success: false, message: "Invalid credentials" });
   }
 });
+app.get("/", (req, res) => {
+  res.json({
+    message: "Welcome to the Quiz API",
+    endpoints: {
+      "POST /login": "Authenticate user and get a token",
+      "GET /api/questions": "Fetch all quiz questions (without answers)",
+      "POST /api/submit": "Submit quiz answers and receive a score",
+      "GET /api/result/:userId": "Get quiz results for a specific user"
+    }
+  });
+});
+
 // Store user results
 let userResults = {};
 
