@@ -1,0 +1,16 @@
+.home{
+    width: 70%;
+    margin: auto;
+}
+.home h1{
+    color: rgb(244, 43, 43);
+}
+.home-btn{
+    width: 150px;
+    background-color: forestgreen;
+    color: wheat;
+    height: 30px;
+    border: none;
+    border-radius: 4px;
+    margin: auto;
+}

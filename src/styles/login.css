@@ -1,0 +1,27 @@
+.form{
+    border: 1px solid lightgray;
+    border-radius: 7px;
+    width: 40%;
+    margin: auto;
+}
+.form > input {
+        border: 1px solid lightgray;
+        padding: 5px 8px;
+        width: 300px;
+}
+.input-btn{
+    background-color: rgb(55, 55, 243);
+    padding: 5px 8px;
+       
+}
+.form-div{
+    width: 50%;
+        border: 1px solid gray;
+        margin: 100px auto;
+        border-radius: 10px;
+        background-color: lightgrey;
+        
+}
+h2{
+    text-align: center;
+}

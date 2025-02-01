@@ -1,0 +1,11 @@
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: linear-gradient(50deg, rgb(233, 70, 98),rgb(240, 54, 54),rgb(238, 165, 30));
+}
+.link{
+    text-decoration: none;
+    color: blanchedalmond;
+}

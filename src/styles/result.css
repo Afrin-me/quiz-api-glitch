@@ -1,0 +1,11 @@
+.result-div{
+    width: 50%;
+    margin: 40px auto;
+    background-color: rgb(238, 229, 229);
+    border-radius: 10px;
+    height: 300px;
+}
+.result-div > h1{
+    text-align: center;
+    margin-top: 10px;
+}
