@@ -44,7 +44,11 @@ const Quiz=()=> {
           </div>
         );
       })
+      
     }
+    <div>
+        <button>Submit Quiz</button>
+    </div>
     </>
   )
 }
