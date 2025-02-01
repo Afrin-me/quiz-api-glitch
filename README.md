@@ -106,7 +106,7 @@
 - **Response (Success - 200):**
 
   ```json
-  { "success": true, "userId": 1, "score": 3 }
+  { "success": true, "userId": 1, "score": 3,"totalQuestions":13 }
   ```
 
 - **Response (Not Found - 404):**
