@@ -50,16 +50,18 @@
   {
   	"success": true,
   	"questions": [
-  		{
-  			"id": 1,
-  			"question": "What is React?",
-  			"options": ["Library", "Framework", "Language", "Tool"]
-  		},
-  		{
-  			"id": 2,
-  			"question": "Which hook is used for state management in functional components?",
-  			"options": ["useEffect", "useState", "useReducer", "useMemo"]
-  		}
+  	{
+    id: 1,
+    question: "What is React?",
+    options: ["Library", "Framework", "Language", "Tool"],
+    answer: "Library",
+  },
+  {
+    id: 2,
+    question: "Which hook is used for state management in functional components?",
+    options: ["useEffect", "useState", "useReducer", "useMemo"],
+    answer: "useState",
+  }
   	]
   }
   ```
