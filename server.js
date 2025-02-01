@@ -157,8 +157,8 @@ let userResults = {};
 
 // **1. Fetch All Questions**
 app.get("/api/questions", (req, res) => {
-  const formattedQuestions = questions.map(({ answer, ...rest }) => rest); // Remove correct answers
-  res.json({ success: true, questions: formattedQuestions });
+  // const formattedQuestions = questions.map(({ answer, ...rest }) => rest); // Remove correct answers
+  res.json({ success: true, questions: questions });
 });
 
 // **2. Submit Quiz & Get Score**
@@ -180,9 +180,10 @@ app.post("/api/submit", (req, res) => {
 app.get("/api/result/:userId", (req, res) => {
   const { userId } = req.params;
   const score = userResults[userId];
+  const totalQuestions = questions.length; // Get total number of questions
 
   if (score !== undefined) {
-    res.json({ success: true, userId, score });
+    res.json({ success: true, userId, score, totalQuestions });
   } else {
     res.status(404).json({ success: false, message: "Result not found" });
   }
